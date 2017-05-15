@@ -78,7 +78,7 @@ FileStorage.prototype._load = function() {
 FileStorage.prototype._save = function() {
 	var self = this;
 	var filename = path.join(self.path, FILENAME_DB);
-	fs.writeFile(filename, JSON.stringify(self.options));
+	fs.writeFileSync(filename, JSON.stringify(self.options));
 	return self;
 };
 
@@ -117,7 +117,7 @@ FileStorage.prototype._append_changelog = function(id, description) {
 		s = '0' + s;
 
 	var dt = y + '-' + M + '-' + d + ' ' + h + ':' + m + ':' + s;
-	fs.appendFile(path.join(self.path, FILENAME_CHANGELOG), dt + ' - #' + id + ' ' + description + '\n');
+	fs.appendFileSync(path.join(self.path, FILENAME_CHANGELOG), dt + ' - #' + id + ' ' + description + '\n');
 
 	return self;
 };
@@ -130,7 +130,7 @@ FileStorage.prototype._append = function(directory, value, id, eventname) {
 	var num = typeof(id) === 'number' ? id : parseInt(id, 10);
 
 	if (eventname === 'insert') {
-		fs.appendFile(filename, JSON.stringify(util._extend({
+		fs.appendFileSync(filename, JSON.stringify(util._extend({
 			id: num
 		}, value)) + '\n');
 		return self;
@@ -166,7 +166,7 @@ FileStorage.prototype._append = function(directory, value, id, eventname) {
 				builder.push(line);
 		}
 
-		fs.writeFile(filename, builder.join('\n') + '\n');
+		fs.writeFileSync(filename, builder.join('\n') + '\n');
 	});
 
 	return self;
@@ -194,7 +194,7 @@ FileStorage.prototype._writeHeader = function(id, filename, header, fnCallback, 
 			read.pipe(stream);
 
 			stream.on('finish', function() {
-				fs.unlink(filename + EXTENSION_TMP);
+				fs.unlinkSync(filename + EXTENSION_TMP);
 
 				if (fnCallback)
 					fnCallback(null, id, header);
